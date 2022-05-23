@@ -40,7 +40,7 @@ class OrderSuccess extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Text(
-                      "العودة للقائمة الرئسية",
+                      "العودة للقائمة الرئيسية",
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.w600),
                     )),

@@ -5,7 +5,6 @@ import 'package:marka_app/Data/Repositories/banner_repository.dart';
 import 'package:marka_app/Data/Repositories/category_repository.dart';
 import 'package:marka_app/Data/Repositories/order_repository.dart';
 import 'package:marka_app/Data/Repositories/product_repository.dart';
-import 'package:marka_app/Views/Screens/Cart/OrderSuccess.dart';
 import 'package:marka_app/Views/Screens/Home/home_screen.dart';
 import 'package:marka_app/Views/Screens/IntroPages/lanch_screen.dart';
 import 'package:marka_app/blocs/Banner/banner_cubit.dart';
@@ -37,7 +36,7 @@ class AppRouter {
   Route? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (context) => const OrderSuccess());
+        return MaterialPageRoute(builder: (context) => const LaunchScreen());
       case '/home':
         return MaterialPageRoute(
           builder: (context) => MultiBlocProvider(
@@ -80,7 +79,7 @@ class AppRouter {
                 ),
               )
             ],
-            child: const OrderSuccess(),
+            child: const HomeScreen(),
           ),
         );
       default:
