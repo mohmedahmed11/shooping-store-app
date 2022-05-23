@@ -9,7 +9,10 @@ import 'package:marka_app/Data/Models/Cart.dart';
 import 'package:marka_app/Data/Models/CategoryModel.dart';
 import 'package:marka_app/Data/Models/InheritedInjection.dart';
 import 'package:marka_app/Data/Models/ProductModel.dart';
+import 'package:marka_app/Data/Repositories/banner_repository.dart';
+import 'package:marka_app/Data/Repositories/category_repository.dart';
 import 'package:marka_app/Data/Repositories/product_repository.dart';
+import 'package:marka_app/Views/Screens/Home/banner_widgit.dart';
 import 'package:marka_app/Views/Screens/Product/products_list.dart';
 // import 'package:marka_app/Data/Models/ProductModel.dart';
 import 'package:marka_app/blocs/Banner/banner_cubit.dart';
@@ -37,78 +40,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController searchTextcontroller = TextEditingController();
 
-  int activePage = 0;
-  List<SliderImage> sliderImages = [];
+  late CartCubit cartCubit;
+  late BannerCubit bannerCubit;
+  late CategoryCubit categoryCubit;
 
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<CartCubit>(context).getCartItemsCount();
-    // BlocProvider.of<BannerCubit>(context).getAllBannerImages();
-    // _getBanner();
+    print("object");
+    cartCubit = BlocProvider.of<CartCubit>(context);
+
+    // categoryCubit = BlocProvider.of<CategoryCubit>(context);
+    cartCubit.getCartItemsCount();
   }
 
-  Widget setupBanner() {
-    return BlocBuilder<BannerCubit, BannerState>(builder: (context, state) {
-      if (state is BannerLoaded && (state).bannerImages.isNotEmpty) {
-        sliderImages = (state).bannerImages;
-
-        return ImageSlideshow(
-          /// Width of the [ImageSlideshow].
-          width: double.infinity,
-
-          /// Height of the [ImageSlideshow].
-          height: 128,
-
-          /// The page to show when first creating the [ImageSlideshow].
-          initialPage: 0,
-
-          /// The color to paint the indicator.
-          indicatorColor: primaryColor,
-
-          /// The color to paint behind th indicator.
-          indicatorBackgroundColor: Colors.grey,
-
-          /// The widgets to display in the [ImageSlideshow].
-          /// Add the sample image file into the images folder
-          children: [
-            for (var image in sliderImages)
-              GestureDetector(
-                onTap: () {
-                  print(image.productId);
-                },
-                child: Image.network(
-                  baseUrlImage + image.image,
-                  fit: BoxFit.cover,
-                ),
-              )
-          ],
-
-          /// Called whenever the page in the center of the viewport changes.
-          onPageChanged: (value) {
-            activePage = value;
-            // print('Page changed: ');
-          },
-
-          /// Auto scroll interval.
-          /// Do not auto scroll with null or 0.
-          autoPlayInterval: 5000,
-
-          /// Loops back to first slide.
-          isLoop: true,
-        );
-      } else if (state is FailToLoadBannerData) {
-        return Center(
-          child: Image.asset("images/error.png"),
-        );
-      } else {
-        return const Center(
-          child: CircularProgressIndicator(
-            color: primaryColor,
-          ),
-        );
-      }
-    });
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -186,30 +134,46 @@ class _HomeScreenState extends State<HomeScreen> {
             final bool connected = connectivity != ConnectivityResult.none;
 
             if (connected) {
-              BlocProvider.of<BannerCubit>(context).getAllBannerImages();
+              // BlocProvider.of<BannerCubit>(context).getAllBannerImages();
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: const [
-                              BoxShadow(
-                                  offset: Offset.zero,
-                                  blurRadius: 2,
-                                  spreadRadius: 0,
-                                  color: Colors.black12)
-                            ]),
-                        height: 128,
-                        width: MediaQuery.of(context).size.width,
-                        child: setupBanner()),
-                    const Categories(),
-                    const MostSaller(),
-                    const Leatest(),
+                    BlocProvider(
+                      create: (BuildContext context) => BannerCubit(
+                        BannerRepository(
+                          APIRepository(),
+                        ),
+                      ),
+                      child: const Banners(),
+                    ),
+
+                    BlocProvider(
+                      create: (BuildContext context) => CategoryCubit(
+                        CategoryRepository(
+                          APIRepository(),
+                        ),
+                      ),
+                      child: const Categories(),
+                    ),
+                    BlocProvider(
+                      create: (BuildContext context) => ProductsBestSellerCubit(
+                        ProductRepository(
+                          APIRepository(),
+                        ),
+                      ),
+                      child: const MostSaller(),
+                    ),
+                    BlocProvider(
+                      create: (BuildContext context) => ProductsLeatesCubit(
+                        ProductRepository(
+                          APIRepository(),
+                        ),
+                      ),
+                      child: const Leatest(),
+                    )
+                    // const Categories(),
+                    // const MostSaller(),
+                    // const Leatest(),
                     // const Expanded(
                     //   child: Leatest(),
                     // ),
@@ -248,14 +212,22 @@ class Categories extends StatefulWidget {
 
 class _CategoriesState extends State<Categories> {
   late List<CategoryModel> categories = [];
-
+  late CategoryCubit categoryCubit;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    categoryCubit = BlocProvider.of<CategoryCubit>(context);
     BlocProvider.of<CategoryCubit>(context).getAllCategories();
     // BlocProvider.of<CartCubit>(context).getCartItemsCount();
     // _getCateories();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    categoryCubit.close();
+    super.dispose();
   }
 
   @override
@@ -398,8 +370,8 @@ class _MostSallerState extends State<MostSaller> {
     // TODO: implement initState
     super.initState();
     // BlocProvider.of<ProductsCubit>(context).getAllBestSellerProducts();
-    print(BlocProvider.of<ProductsBestSellerCubit>(context)
-        .getAllBestSellerProducts());
+    BlocProvider.of<ProductsBestSellerCubit>(context)
+        .getAllBestSellerProducts();
     // _getBestSeller();
   }
 

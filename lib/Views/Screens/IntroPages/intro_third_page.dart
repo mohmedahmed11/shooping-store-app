@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:marka_app/Data/Api/API_Repository.dart';
+import 'package:marka_app/Data/Repositories/login_repository.dart';
+import 'package:marka_app/blocs/Login/login_cubit.dart';
 import 'package:marka_app/constants.dart';
 
-import '../login_page.dart';
+import '../Auth/login_page.dart';
 
 class IntroThirdPage extends StatelessWidget {
   const IntroThirdPage({Key? key}) : super(key: key);
@@ -29,9 +33,16 @@ class IntroThirdPage extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginPage()));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider(
+                          create: (context) => LoginCubit(
+                            LoginRepository(APIRepository()),
+                          ),
+                          child: const LoginPage(),
+                        ),
+                      ),
+                    );
                   },
                   child: const SizedBox(
                     width: 60,

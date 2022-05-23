@@ -54,11 +54,11 @@ class APIRepository {
       if (data.status == true) {
         return ApiResponse.completed(data.data);
       } else {
-        return ApiResponse.error("Fail To Send Data");
+        return ApiResponse.error(data.message ?? "Operation Fail");
       }
     } catch (e) {
       print(e.toString());
-      return ApiResponse.error("fail to LoadData");
+      return ApiResponse.error("Operation Fail");
     }
   }
 }

@@ -4,11 +4,12 @@ import 'package:marka_app/Data/Models/Cart.dart';
 import 'package:marka_app/Data/Models/OrderModel.dart';
 import 'package:marka_app/Data/Models/ProductModel.dart';
 import 'package:marka_app/Data/Repositories/order_repository.dart';
+import 'package:marka_app/blocs/Heppler.dart';
 import 'package:meta/meta.dart';
 
 part 'cart_state.dart';
 
-class CartCubit extends Cubit<CartState> {
+class CartCubit extends Cubit<CartState> with Disposable {
   final OrderRepository orderRepository;
   CartCubit(this.orderRepository) : super(CartInitial());
   Cart cart = Cart([]);
@@ -41,4 +42,10 @@ class CartCubit extends Cubit<CartState> {
 
     return order;
   }
+
+  // @override
+  // Future<void> close() {
+  //   dispose();
+  //   return super.close();
+  // }
 }

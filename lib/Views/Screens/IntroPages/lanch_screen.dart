@@ -3,10 +3,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:marka_app/Data/Api/API_Repository.dart';
+import 'package:marka_app/Data/Repositories/login_repository.dart';
+import 'package:marka_app/blocs/Login/login_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Home/home_screen.dart';
 import 'intro_first_page.dart';
-import '../login_page.dart';
+import '../Auth/login_page.dart';
 // import 'login/login_page.dart';
 
 class LaunchScreen extends StatefulWidget {
@@ -21,46 +25,44 @@ class _LaunchScreenState extends State<LaunchScreen> {
     Timer(
         Duration(seconds: 4),
         () => {
-              if (prefs.getBool('hasViewIntro') != null)
+              if (prefs.getBool('isLoggedIn') == null)
                 {
-                  if (prefs.getBool('isLoggedIn') == null)
-                    {
-                      // Navigator.pushAndRemoveUntil(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => LoginPage()),
-                      //   (Route<dynamic> route) => false,
-                      // )
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => LoginPage()))
-                    }
-                  else if (prefs.getBool('isLoggedIn') == true)
-                    {
-                      // Navigator.pushAndRemoveUntil(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => HomeScreen()),
-                      //   (Route<dynamic> route) => false,
-                      // )
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  HomeScreen())) //return HomeScreen();
-                    }
-                  else
-                    {
-                      // Navigator.pushAndRemoveUntil(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => LoginPage()),
-                      //   (Route<dynamic> route) => false,
-                      // )
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => LoginPage()))
-                    }
+                  // Navigator.pushAndRemoveUntil(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => LoginPage()),
+                  //   (Route<dynamic> route) => false,
+                  // )
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => IntroFirstPage()))
+                }
+              else if (prefs.getBool('isLoggedIn') == true)
+                {
+                  // Navigator.pushAndRemoveUntil(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => HomeScreen()),
+                  //   (Route<dynamic> route) => false,
+                  // )
+                  Navigator.pushReplacementNamed(
+                      context, "/home") //return HomeScreen();
                 }
               else
                 {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => IntroFirstPage()))
+                  // Navigator.pushAndRemoveUntil(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => LoginPage()),
+                  //   (Route<dynamic> route) => false,
+                  // )
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => LoginCubit(
+                          LoginRepository(APIRepository()),
+                        ),
+                        child: const LoginPage(),
+                      ),
+                    ),
+                  )
                 }
             });
   }

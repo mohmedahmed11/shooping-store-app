@@ -33,6 +33,7 @@ class HasnaaStore extends StatelessWidget {
             ),
             // primarySwatch: Colors.blue,
           ),
+          initialRoute: '/',
           onGenerateRoute: appRouter.generateRoute),
     );
   }
