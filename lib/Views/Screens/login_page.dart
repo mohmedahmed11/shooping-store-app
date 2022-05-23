@@ -131,11 +131,6 @@ class _LoginPageState extends State<LoginPage> {
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacementNamed(context, "/home");
-
-                    // .pushReplacement(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => const HomeScreen()));
                   },
                   child: const SizedBox(
                     width: 120,
