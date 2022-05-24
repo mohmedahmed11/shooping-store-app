@@ -33,6 +33,23 @@ class APIRepository {
     }
   }
 
+  Future<ApiResponse<dynamic>> get(String path) async {
+    //  ApiResponse.loading("loading");
+    try {
+      Response response = await dio.get(path);
+
+      ResponseModel data = ResponseModel.fromJson(response.data);
+      if (data.status == true) {
+        return ApiResponse.completed(data.data);
+      } else {
+        return ApiResponse.error(data.message ?? "Operation Fail");
+      }
+    } catch (e) {
+      print(e.toString());
+      return ApiResponse.error("Operation Fail");
+    }
+  }
+
 //   var formData = FormData.fromMap({
 //   'name': 'wendux',
 //   'age': 25,

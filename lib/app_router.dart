@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marka_app/Data/Api/API_Repository.dart';
 import 'package:marka_app/Data/Repositories/banner_repository.dart';
 import 'package:marka_app/Data/Repositories/category_repository.dart';
-import 'package:marka_app/Data/Repositories/login_repository.dart';
+import 'package:marka_app/Data/Repositories/auth_repository.dart';
 import 'package:marka_app/Data/Repositories/order_repository.dart';
 import 'package:marka_app/Data/Repositories/product_repository.dart';
 import 'package:marka_app/Views/Screens/Auth/login_page.dart';
@@ -44,7 +44,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
             create: (context) => LoginCubit(
-              LoginRepository(APIRepository()),
+              AuthRepository(APIRepository()),
             ),
             child: const LoginPage(),
           ),

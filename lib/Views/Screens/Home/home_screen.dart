@@ -146,7 +146,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: const Banners(),
                     ),
-
                     BlocProvider(
                       create: (BuildContext context) => CategoryCubit(
                         CategoryRepository(
@@ -170,13 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       child: const Leatest(),
-                    )
-                    // const Categories(),
-                    // const MostSaller(),
-                    // const Leatest(),
-                    // const Expanded(
-                    //   child: Leatest(),
-                    // ),
+                    ),
                   ],
                 ),
               );

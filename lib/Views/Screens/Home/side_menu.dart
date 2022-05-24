@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:marka_app/Data/Api/API_Repository.dart';
+import 'package:marka_app/Data/Repositories/auth_repository.dart';
+import 'package:marka_app/Views/Screens/User/user_profile.dart';
 import 'package:marka_app/app_router.dart';
+import 'package:marka_app/blocs/User/user_cubit.dart';
 import 'package:marka_app/constants.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,17 +72,33 @@ class _SideMenuState extends State<SideMenu> {
     return isgLogedIN
         ? Column(
             children: [
-              Row(
-                children: const [
-                  Icon(
-                    Icons.person,
-                    color: primaryColor,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text("الملف الشخصي", style: TextStyle(fontSize: 14))
-                ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider(
+                          create: (BuildContext context) => UserCubit(
+                            AuthRepository(
+                              APIRepository(),
+                            ),
+                          ),
+                          child: const UserProfile(),
+                        ),
+                      ));
+                },
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.person,
+                      color: primaryColor,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("الملف الشخصي", style: TextStyle(fontSize: 14))
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 15,

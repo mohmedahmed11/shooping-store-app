@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:marka_app/Views/widgets/tosts.dart';
 import 'package:marka_app/blocs/Login/login_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Home/home_screen.dart';
@@ -26,39 +27,13 @@ class _LoginPageState extends State<LoginPage> {
   late bool isPassword;
   late Function(String) onSave;
 
-  late FToast fToast;
+  // late FToast fToast;
 
   @override
   void initState() {
     super.initState();
-    fToast = FToast();
-    fToast.init(context);
-  }
-
-  _showTosta(IconData icon, Color color, String message) {
-    Widget toast = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25.0),
-        color: color,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon),
-          const SizedBox(
-            width: 12.0,
-          ),
-          Text(message),
-        ],
-      ),
-    );
-
-    fToast.showToast(
-      child: toast,
-      gravity: ToastGravity.BOTTOM,
-      toastDuration: const Duration(seconds: 3),
-    );
+    // fToast = FToast();
+    // fToast.init(context);
   }
 
   _loginActionBtn(BuildContext context) {
@@ -70,8 +45,8 @@ class _LoginPageState extends State<LoginPage> {
             final SharedPreferences prefs =
                 await SharedPreferences.getInstance();
 
-            _showTosta(
-                Icons.check, Colors.greenAccent, "تم تسجيل الدخول بنجاح");
+            showTosta(context, Icons.check, Colors.greenAccent,
+                "تم تسجيل الدخول بنجاح");
             // print();
             prefs.setBool("isLoggedIn", true);
             prefs.setInt("userId", (state).user.id);
@@ -113,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
           WidgetsBinding.instance!.addPostFrameCallback((_) {
             // Your Code Here
             BlocProvider.of<LoginCubit>(context).emit(LoginInitial());
-            _showTosta(Icons.error, Colors.redAccent, (state).message);
+            showTosta(context, Icons.error, Colors.redAccent, (state).message);
           });
 
           return GestureDetector(
